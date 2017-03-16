@@ -19,3 +19,7 @@
   local msg = sc:read("test2")
 #+end_src
 
+可以结合cocos2dx shedule定时器使用。
+
+--TODO 稍后我会放上lua 端的封装。
+
