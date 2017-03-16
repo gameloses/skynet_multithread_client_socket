@@ -1,1 +1,21 @@
+* 说明
 此模块应用与cocos2dx(lua)，和skynet 服务器通讯
+* 使用
+导出lua后, 比如放在base 名字空间下，在cpp中注册后：
+#+begin_src lua
+  local sc = base.SocketCommunication:getInstance()
+  local sockets = {
+	  test = {host = "test.name.com", port = 1234},
+	  test1 = {host = "127.0.0.1", port = 1234},
+  }
+  for socketName, info in pairs(sockets) do
+	  sc:connect(socketName, info.host, info.port)
+  end
+
+  sc:write("test1", 111);
+  local msg = sc:read("test1")
+
+  sc:write("test2", 111);
+  local msg = sc:read("test2")
+#+end_src
+
