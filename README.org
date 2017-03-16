@@ -1,0 +1,1 @@
+此模块应用与cocos2dx(lua)，和skynet 服务器通讯
