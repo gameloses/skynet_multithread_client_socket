@@ -28,7 +28,7 @@ public:
     static SocketCommunication * getInstance();
     bool connect(string socketName, string host, int port);
     char *read(string &socketName);
-    void write(const char *content, string &socketName);
+    void write(string &socketName, const char *content);
     
 private:
     

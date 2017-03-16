@@ -59,7 +59,7 @@ char * SocketCommunication::read(string &socketName)
     return NULL;
 }
 
-void SocketCommunication::write(const char *content, string &socketName)
+void SocketCommunication::write(string &socketName, const char *content,)
 {
     string data = content;
     this->pushRequest(socketName, data);
