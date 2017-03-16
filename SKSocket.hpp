@@ -3,7 +3,7 @@
 //  base
 //
 //  Created by dmx on 2017/3/14.
-//  Copyright © 2017年 丁明信. All rights reserved.
+//  Copyright © 2017年 everding. All rights reserved.
 //
 
 #ifndef SKSocket_hpp
