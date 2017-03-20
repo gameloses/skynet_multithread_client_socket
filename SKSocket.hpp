@@ -37,7 +37,7 @@ class SKSocket {
 public:
     bool connectOnce();
     void write(char *);
-    char * read();
+    string read();
     
     inline SKSocket() {};
     SKSocket(string name, string host, int port);
@@ -51,7 +51,7 @@ private:
     fd_set fdr;
     
     void doSend(const char *);
-    char * doRecv();
+    string doRecv();
     bool setoptNoSignal();
     int doSelect();
 

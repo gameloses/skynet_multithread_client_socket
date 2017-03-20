@@ -27,7 +27,7 @@ public:
     virtual ~SocketCommunication();
     static SocketCommunication * getInstance();
     bool connect(string socketName, string host, int port);
-    char *read(string &socketName);
+    string read(string &socketName);
     void write(string &socketName, const char *content);
     
 private:

@@ -90,10 +90,10 @@ void SKSocket::write(char * content)
     this->doSend((const char *)content);
 }
 
-char * SKSocket::read()
+string SKSocket::read()
 {
-    char *msg = this->doRecv();
-    return msg;
+    string data = this->doRecv();
+    return data;
 }
 
 void SKSocket::doSend(const char *content)
@@ -140,7 +140,7 @@ int SKSocket::doSelect()
     }
 }
 
-char * SKSocket::doRecv()
+string SKSocket::doRecv()
 {
     while(true) {
         int selectResult = this->doSelect();
@@ -152,10 +152,11 @@ char * SKSocket::doRecv()
                 if (msgBodyLen > 0) {
                     char *msgBodyBuf = new char[msgBodyLen];
                     size = (int)recv(this->socketId, msgBodyBuf, msgBodyLen, 0);
+                    
                     if (size > 0) {
                         auto messageResult = string(msgBodyBuf, msgBodyLen);
-                        delete msgBodyBuf;
-                        return (char *)messageResult.c_str();
+                        delete[] msgBodyBuf;
+                        return messageResult;
                     }
                 }
             }

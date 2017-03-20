@@ -45,21 +45,21 @@ bool SocketCommunication::connect(string socketName, string host, int port)
     return true;
 }
 
-char * SocketCommunication::read(string &socketName)
+string SocketCommunication::read(string &socketName)
 {
     vector<string> *rq = this->responseQueues[socketName];
     if (rq != NULL) {
         vector<string> &responseQueue = *rq;
         if (responseQueue.size() > 0) {
-            char *res = (char *)responseQueue.front().c_str();
+            auto ret = string(responseQueue.front());
             responseQueue.erase(responseQueue.begin());
-            return res;
+            return ret;
         }
     }
-    return NULL;
+    return "";
 }
 
-void SocketCommunication::write(string &socketName, const char *content,)
+void SocketCommunication::write(string &socketName, const char *content)
 {
     string data = content;
     this->pushRequest(socketName, data);
@@ -94,8 +94,8 @@ void SocketCommunication::internalReadFunc()
         for (auto const &info : this->sockets) {
             string socketName = info.first;
             SKSocket *socket = info.second;
-            char *msg = socket->read();
-            if (msg != NULL) {
+            string msg = socket->read();
+            if (msg.length() > 0) {
                 string content(msg);
                 this->pushResponse(socketName, content); 
             }
@@ -144,8 +144,9 @@ void SocketCommunication::pushResponse(string socketName, string &content)
     
     if (rq != NULL) {
         vector<string> &responseQueue = *rq;
-        string res = content;
-        responseQueue.push_back(res);
+        printf("pushResponse %s\n", content.c_str());
+        string *res = new string(content);
+        responseQueue.push_back(*res);
 
     }
     unlockRead();
