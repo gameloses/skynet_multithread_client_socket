@@ -63,8 +63,8 @@ private:
         pthread_mutex_unlock(&writeMutex);
     }
     
-    void popResponse(string, char **);
-    void popRequest(string, char **);
+    string popResponse(string&);
+    string popRequest(string);
     void pushRequest(string, string &);
     void pushResponse(string, string &);
     

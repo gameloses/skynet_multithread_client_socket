@@ -162,9 +162,9 @@ string SKSocket::doRecv()
             }
             else {
                 //TODO return error
-                return NULL;
+                return "";
             }
         }
     }
-    return NULL;
+    return "";
 }

@@ -47,16 +47,7 @@ bool SocketCommunication::connect(string socketName, string host, int port)
 
 string SocketCommunication::read(string &socketName)
 {
-    vector<string> *rq = this->responseQueues[socketName];
-    if (rq != NULL) {
-        vector<string> &responseQueue = *rq;
-        if (responseQueue.size() > 0) {
-            auto ret = string(responseQueue.front());
-            responseQueue.erase(responseQueue.begin());
-            return ret;
-        }
-    }
-    return "";
+    return this->popResponse(socketName);
 }
 
 void SocketCommunication::write(string &socketName, const char *content)
@@ -115,11 +106,10 @@ void SocketCommunication::internalWriteFunc()
         usleep(1000);
         for (auto const &info : this->sockets) {
             string socketName = info.first;
-            char *request = NULL;
-            this->popRequest(socketName, &request);
-            if (request) {
+            string request = this->popRequest(socketName);
+            if (request.length() > 0) {
                 SKSocket *socket = info.second;
-                socket->write(request);
+                socket->write((char *)request.c_str());
             }
         }
     }
@@ -144,7 +134,6 @@ void SocketCommunication::pushResponse(string socketName, string &content)
     
     if (rq != NULL) {
         vector<string> &responseQueue = *rq;
-        printf("pushResponse %s\n", content.c_str());
         string *res = new string(content);
         responseQueue.push_back(*res);
 
@@ -152,7 +141,7 @@ void SocketCommunication::pushResponse(string socketName, string &content)
     unlockRead();
 }
 
-void SocketCommunication::popRequest(string socketName, char **request)
+string SocketCommunication::popRequest(string socketName)
 {
     lockWrite();
     vector<string> *rq = this->requestQueues[socketName];
@@ -161,15 +150,18 @@ void SocketCommunication::popRequest(string socketName, char **request)
         vector<string> &requestQueue = *rq;
         if (requestQueue.size() > 0) {
             string data = requestQueue.front();
-            *request = (char *)data.c_str();
+            auto request = string(data);
             requestQueue.erase(requestQueue.begin());
+            unlockWrite();
+            return request;
         }
 
     }
     unlockWrite();
+    return "";
 }
 
-void SocketCommunication::popResponse(string socketName, char **response)
+string SocketCommunication::popResponse(string &socketName)
 {
     lockRead();
     vector<string> *rq = this->responseQueues[socketName];
@@ -178,10 +170,13 @@ void SocketCommunication::popResponse(string socketName, char **response)
         vector<string> &responseQueue = *rq;
         if (responseQueue.size() > 0) {
             string data = responseQueue.front();
-            *response = (char *)data.c_str();
+            auto response = string(data);
             responseQueue.erase(responseQueue.begin());
+            unlockRead();
+            return response;
         }
 
     }
     unlockRead();
+    return "";
 }
